@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Result & Record Management System (SRS)</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar no-print">
+    <div class="nav-container">
+      <div class="brand-wrapper">
+        <div class="brand-logo">SRS</div>
+        <div class="brand-info">
+          <h1 id="nav-inst-name">Apex Institute of Technology & Science</h1>
+          <p id="nav-session-name">Student Result & Record Management System • Session 2024-2025</p>
+        </div>
+      </div>
+
+      <!-- Unified Role Tabs -->
+      <nav class="role-tabs" aria-label="Portal Navigation">
+        <button class="role-tab-btn active" data-view="student" id="tab-student">
+          <span>🎓</span> Student Portal
+        </button>
+        <button class="role-tab-btn" data-view="teacher" id="tab-teacher">
+          <span>👨‍🏫</span> Faculty Portal
+        </button>
+        <button class="role-tab-btn" data-view="admin" id="tab-admin">
+          <span>⚙️</span> Admin Dashboard
+        </button>
+      </nav>
+
+      <!-- System Publication Status -->
+      <div class="nav-status">
+        <span class="badge-publish published" id="status-publish-pill">
+          <span class="status-dot"></span>
+          <span id="status-publish-text">Results Published</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- ====================================================================
+         1. STUDENT PORTAL VIEW
+         ==================================================================== -->
+    <section id="view-student" class="view-section active">
+      <div class="section-header no-print">
+        <div>
+          <h2>Student Result Portal</h2>
+          <p>Search by roll number or pick an enrolled student to view your semester grade card and performance analytics.</p>
+        </div>
+
+        <div class="student-selector-bar">
+          <label for="select-student-quick" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Select Student:</label>
+          <select id="select-student-quick" class="input-select">
+            <!-- Dynamically populated -->
+          </select>
+          <button class="btn btn-primary" id="btn-print-result">
+            <span>🖨️</span> Print / Download Marksheet
+          </button>
+        </div>
+      </div>
+
+      <!-- Notice when unpublished -->
+      <div id="student-unpublished-notice" class="card" style="display: none; background: #fffbeb; border-color: #fde68a; color: #92400e;">
+        <strong>⚠️ Results are currently under faculty review / unpublished.</strong>
+        <p style="font-size: 0.85rem; margin-top: 0.25rem;">The administration has not yet made the current semester final results publicly available. Please check back later.</p>
+      </div>
+
+      <!-- Active Student Result Card -->
+      <div id="student-result-container">
+        <!-- Profile Banner -->
+        <div class="card no-print">
+          <div class="student-profile-strip">
+            <div class="student-meta-group">
+              <div class="student-avatar" id="res-avatar">AS</div>
+              <div class="student-info">
+                <h3 id="res-name">Aarav Sharma</h3>
+                <div class="student-badges">
+                  <span class="badge badge-blue" id="res-roll">Roll No: 2024CSE001</span>
+                  <span class="badge badge-gray" id="res-branch">Branch: CSE</span>
+                  <span class="badge badge-gray" id="res-sem">Semester: 5</span>
+                  <span class="badge badge-gray" id="res-sec">Section: A</span>
+                  <span class="badge badge-green" id="res-attendance">Attendance: 94%</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align: right;">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Academic Term</span>
+              <p style="font-weight: 700; font-size: 0.95rem;" id="res-term">Odd Semester (July - Dec 2024)</p>
+            </div>
+          </div>
+
+          <!-- High-impact GPA Summary Banner -->
+          <div class="gpa-banner">
+            <div class="gpa-item">
+              <div class="gpa-label">Semester GPA (SGPA)</div>
+              <div class="gpa-val" id="res-sgpa" style="color: #60a5fa;">8.85</div>
+              <div class="gpa-status" id="res-sgpa-status">Scale: 10.00</div>
+            </div>
+            <div class="gpa-item">
+              <div class="gpa-label">Cumulative GPA (CGPA)</div>
+              <div class="gpa-val" id="res-cgpa" style="color: #34d399;">8.90</div>
+              <div class="gpa-status">All Semesters</div>
+            </div>
+            <div class="gpa-item">
+              <div class="gpa-label">Credits Earned / Total</div>
+              <div class="gpa-val" id="res-credits">20 / 20</div>
+              <div class="gpa-status">100% Cleared</div>
+            </div>
+            <div class="gpa-item">
+              <div class="gpa-label">Final Evaluation</div>
+              <div class="gpa-val" id="res-verdict" style="font-size: 1.5rem; color: #fde047;">FIRST CLASS WITH DISTINCTION</div>
+              <div class="gpa-status" id="res-standing">Status: Pass</div>
+            </div>
+          </div>
+
+          <!-- Subject Marks Table -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1rem; font-weight: 700;">Semester 5 Subject Marks & Grade Breakdown</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Standard 10-Point Relative Grading System</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="clean-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Subject Title</th>
+                  <th style="text-align: center;">Credits</th>
+                  <th style="text-align: center;">Internal (Max)</th>
+                  <th style="text-align: center;">External (Max)</th>
+                  <th style="text-align: center;">Total (100)</th>
+                  <th style="text-align: center;">Grade</th>
+                  <th style="text-align: center;">Grade Point</th>
+                  <th>Performance</th>
+                </tr>
+              </thead>
+              <tbody id="student-marks-tbody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Official Marksheet (Formatted for Print / PDF Export) -->
+        <div class="official-report-card">
+          <div class="report-header">
+            <h2 id="print-inst-name">Apex Institute of Technology & Science</h2>
+            <p id="print-sub-name">Accredited by NAAC with Grade "A+" | Affiliated to State Technological University</p>
+            <p id="print-address">Knowledge Campus, University Road, Tech Park Zone</p>
+            <div class="report-title">Statement of Marks & Grades — Grade Card</div>
+          </div>
+
+          <div class="report-student-grid">
+            <div><strong>Student Name:</strong> <span id="p-name">Aarav Sharma</span></div>
+            <div><strong>Enrollment / Roll No:</strong> <span id="p-roll">2024CSE001</span></div>
+            <div><strong>Programme / Branch:</strong> <span id="p-branch">B.Tech - Computer Science & Engineering</span></div>
+            <div><strong>Semester / Year:</strong> <span id="p-sem">Semester 5 / Year III</span></div>
+            <div><strong>Academic Session:</strong> <span id="p-session">2024 - 2025</span></div>
+            <div><strong>Examination Held:</strong> <span id="p-exam-month">November 2024</span></div>
+          </div>
+
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th style="text-align: center;">Credits</th>
+                <th style="text-align: center;">Max Marks</th>
+                <th style="text-align: center;">Marks Obtained</th>
+                <th style="text-align: center;">Letter Grade</th>
+                <th style="text-align: center;">Grade Point (G)</th>
+                <th style="text-align: center;">Credit Points (C × G)</th>
+              </tr>
+            </thead>
+            <tbody id="print-marks-tbody">
+              <!-- Injected by JavaScript -->
+            </tbody>
+            <tfoot>
+              <tr style="font-weight: 700; background-color: #f8fafc;">
+                <td colspan="2" style="text-align: right;">Total / Summary:</td>
+                <td style="text-align: center;" id="p-total-credits">20</td>
+                <td style="text-align: center;" id="p-max-total">600</td>
+                <td style="text-align: center;" id="p-obtained-total">520</td>
+                <td style="text-align: center;">-</td>
+                <td style="text-align: center;">SGPA:</td>
+                <td style="text-align: center;" id="p-sgpa-final">8.85</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div style="font-size: 8.5pt; color: #475569; margin-bottom: 1.5rem; line-height: 1.4;">
+            <strong>Grading Scale:</strong> O (Outstanding, 10), A+ (Excellent, 9), A (Very Good, 8), B+ (Good, 7), B (Above Average, 6), C (Average, 5), P (Pass, 4), F (Fail, 0).
+            <br>
+            <strong>Formula:</strong> SGPA = ∑(Course Credits × Grade Point) / ∑(Course Credits). Minimum passing requirement is 40% overall in each subject.
+          </div>
+
+          <div class="report-footer">
+            <div class="signature-box">
+              Date of Issue: <span id="p-issue-date">20-11-2024</span><br>
+              <strong>Verified by Academic Section</strong>
+            </div>
+            <div class="signature-box">
+              <br>
+              <strong>Dean of Academic Affairs</strong>
+            </div>
+            <div class="signature-box">
+              <br>
+              <strong>Controller of Examinations</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         2. TEACHER / FACULTY PORTAL VIEW
+         ==================================================================== -->
+    <section id="view-teacher" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2>Faculty Marks Entry & Evaluation</h2>
+          <p>Select your class and assigned subject to record, update, and validate internal assessment and semester exam marks.</p>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-secondary" id="btn-teacher-autofill">
+            <span>✨</span> Autofill Demo Marks
+          </button>
+          <button class="btn btn-success" id="btn-teacher-save">
+            <span>💾</span> Save All Marks
+          </button>
+        </div>
+      </div>
+
+      <!-- Class & Subject Selector Filter -->
+      <div class="filter-strip">
+        <div class="filter-item">
+          <label for="teacher-filter-branch">Department / Branch</label>
+          <select id="teacher-filter-branch" class="input-select">
+            <option value="CSE">Computer Science & Engg (CSE)</option>
+            <option value="IT">Information Technology (IT)</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label for="teacher-filter-semester">Semester</label>
+          <select id="teacher-filter-semester" class="input-select">
+            <option value="5">Semester 5</option>
+          </select>
+        </div>
+
+        <div class="filter-item" style="flex: 1; min-width: 260px;">
+          <label for="teacher-filter-subject">Subject / Course</label>
+          <select id="teacher-filter-subject" class="input-select" style="width: 100%;">
+            <!-- Dynamically populated based on branch and semester -->
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label>Course Weightage</label>
+          <div id="teacher-subject-meta" style="font-size: 0.8rem; font-weight: 600; padding: 0.5rem 0.75rem; background: #eff6ff; border-radius: var(--radius-sm); color: var(--primary);">
+            Credits: 4 | Int: 40 | Ext: 60
+          </div>
+        </div>
+      </div>
+
+      <!-- Marks Roster Table -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 style="font-size: 1rem; font-weight: 700;">Enrolled Student Class Roster</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);" id="teacher-roster-count">Showing 5 students</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th>Roll Number</th>
+                <th>Student Name</th>
+                <th style="text-align: center;">Internal Marks <br><span id="th-max-int" style="font-size: 0.7rem; color: var(--text-muted);">(Max 40)</span></th>
+                <th style="text-align: center;">External Marks <br><span id="th-max-ext" style="font-size: 0.7rem; color: var(--text-muted);">(Max 60)</span></th>
+                <th style="text-align: center;">Total (100)</th>
+                <th style="text-align: center;">Letter Grade</th>
+                <th style="text-align: center;">Grade Point</th>
+                <th style="text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="teacher-marks-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         3. ADMIN DASHBOARD VIEW
+         ==================================================================== -->
+    <section id="view-admin" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2>System Administration & Control Center</h2>
+          <p>Oversee student enrollments, curriculum subjects, result release statuses, and system-wide performance statistics.</p>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="btn-open-add-student">
+            <span>➕</span> Add New Student
+          </button>
+          <button class="btn btn-secondary" id="btn-export-csv">
+            <span>📥</span> Export Results CSV
+          </button>
+          <button class="btn btn-secondary" id="btn-toggle-publish">
+            <span>🔄</span> Toggle Results Publish
+          </button>
+          <button class="btn btn-danger btn-sm" id="btn-reset-data">
+            <span>⚠️</span> Reset Demo Data
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Stat Cards -->
+      <div class="grid-4" style="margin-bottom: 1.5rem;">
+        <div class="stat-card">
+          <div class="stat-icon blue">👥</div>
+          <div class="stat-details">
+            <h3>Total Students</h3>
+            <div class="stat-val" id="kpi-total-students">8</div>
+            <div class="stat-sub">Across 2 Departments</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green">📈</div>
+          <div class="stat-details">
+            <h3>Pass Percentage</h3>
+            <div class="stat-val" id="kpi-pass-rate">100%</div>
+            <div class="stat-sub">All cleared minimums</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon purple">⭐</div>
+          <div class="stat-details">
+            <h3>Average CGPA</h3>
+            <div class="stat-val" id="kpi-avg-cgpa">8.44</div>
+            <div class="stat-sub">Class Performance</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon amber">🏆</div>
+          <div class="stat-details">
+            <h3>Top Performer</h3>
+            <div class="stat-val" id="kpi-topper" style="font-size: 1.1rem; line-height: 1.3;">Priya Patel</div>
+            <div class="stat-sub" id="kpi-topper-cgpa">CGPA: 9.68 (CSE)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Directory Section -->
+      <div class="card">
+        <div class="admin-toolbar">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="admin-search-input" placeholder="Search by name or roll number...">
+            </div>
+
+            <select id="admin-filter-branch" class="input-select">
+              <option value="ALL">All Departments</option>
+              <option value="CSE">Computer Science (CSE)</option>
+              <option value="IT">Information Technology (IT)</option>
+            </select>
+          </div>
+
+          <span style="font-size: 0.8rem; color: var(--text-muted);" id="admin-student-count">Showing 8 students</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Roll No</th>
+                <th>Student Name</th>
+                <th>Branch</th>
+                <th>Semester</th>
+                <th>Email / Phone</th>
+                <th style="text-align: center;">Attendance</th>
+                <th style="text-align: center;">SGPA</th>
+                <th style="text-align: center;">CGPA</th>
+                <th style="text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-students-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Subject & Curriculum Reference -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <h3 style="font-size: 1rem; font-weight: 700;">Curriculum Courses & Credit Scheme</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Semester 5 Courses</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Course Name</th>
+                <th>Branch</th>
+                <th>Semester</th>
+                <th style="text-align: center;">Credits</th>
+                <th style="text-align: center;">Max Internal</th>
+                <th style="text-align: center;">Max External</th>
+                <th style="text-align: center;">Total</th>
+              </tr>
+            </thead>
+            <tbody id="admin-subjects-tbody">
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       MODAL: ADD / EDIT STUDENT
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-student">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-student-title">Add New Student</h3>
+        <button class="modal-close-btn" id="modal-student-close">&times;</button>
+      </div>
+      <form id="form-student">
+        <input type="hidden" id="student-edit-id">
+        <div class="modal-body">
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="input-roll">Roll Number *</label>
+              <input type="text" id="input-roll" required placeholder="e.g. 2024CSE010">
+            </div>
+            <div class="form-group">
+              <label for="input-name">Full Name *</label>
+              <input type="text" id="input-name" required placeholder="e.g. Rahul Sharma">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="input-branch">Department / Branch *</label>
+              <select id="input-branch" required>
+                <option value="CSE">Computer Science (CSE)</option>
+                <option value="IT">Information Technology (IT)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="input-semester">Semester *</label>
+              <select id="input-semester" required>
+                <option value="5">Semester 5</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="input-section">Section</label>
+              <input type="text" id="input-section" value="A" placeholder="A, B, C">
+            </div>
+            <div class="form-group">
+              <label for="input-attendance">Attendance (%)</label>
+              <input type="number" id="input-attendance" min="0" max="100" value="90">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-email">Email Address</label>
+            <input type="email" id="input-email" placeholder="student@college.edu">
+          </div>
+
+          <div class="form-group">
+            <label for="input-phone">Phone Number</label>
+            <input type="tel" id="input-phone" placeholder="+91 98765 43210">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-student-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="modal-student-save">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer no-print">
+    <p>Student Result & Record Management System (SRS) • Minimal & Clean Frontend Architecture</p>
+    <p style="margin-top: 0.25rem; font-size: 0.75rem;">Engineered with Semantic HTML5, Modular CSS, and Modern JavaScript</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
